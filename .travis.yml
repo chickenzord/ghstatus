@@ -1,0 +1,21 @@
+language: python
+python:
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
+
+install: pip install
+  pip==9.0.1
+  setuptools==36.2.0
+  tox-travis==0.8
+script: tox
+
+deploy:
+  provider: pypi
+  user: ${PYPI_USERNAME}
+  password: ${PYPI_PASSWORD}
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
