@@ -13,6 +13,7 @@ setup(
     package_data={},
     install_requires=[
         'click',
+        'dotenvy',
         'requests',
         'sh',
     ],
