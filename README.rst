@@ -19,3 +19,38 @@ ghstatus
 
 
 GitHub commit status notifier CLI
+
+
+Options
+-------
+
+These options can be automatically set from env variables or dotenv (.env) file in working dir.
+
+- `-u`: `GITHUB_USERNAME`
+- `-p`: `GITHUB_PASSWORD`
+- `--base-url`: `GITHUB_URL`
+- `--repo`: `GITHUB_REPO`
+- `--sha`: `GITHUB_SHA`
+
+If not set by either CLI args or env variables,
+these options can be automatically detected from git repository in current working dir.
+
+- `--repo`: inferred from `.git/config`
+- `--sha`: inferred by executing `git rev-parse HEAD` internally
+
+
+Sample commands
+---------------
+
+**get all statuses** ::
+
+  ghstatus get
+
+**set status** ::
+
+  ghstatus set success --context=unit-test --description='All tests pass!' \
+    --target-url=https://example.com/my-test/1
+
+**set status dynamically based on command exit code** ::
+
+  ghstatus exec --context=unit-test -- ./gradlew test
