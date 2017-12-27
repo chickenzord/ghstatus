@@ -46,7 +46,7 @@ def print_status(status):
 
 @click.group()
 @click.option('base_url', '--base-url', type=str, envvar='GITHUB_URL',
-              default=DEFAULT_GITHUB_URL, show_default=True,
+              default=DEFAULT_GITHUB_URL, show_default=False,
               help='GitHub API URL [env: GITHUB_URL]')
 @click.option('username', '-u', type=str, envvar='GITHUB_USERNAME',
               help='GitHub API username [env: GITHUB_USERNAME]')
@@ -65,7 +65,8 @@ def main(ctx, base_url, username, password, repo, sha):
 
 @main.command('exec')
 @click.option('--context', default=DEFAULT_CONTEXT, show_default=True)
-@click.option('--target-url', help='')
+@click.option('--target-url', envvar='TARGET_URL',
+              help='URL to the status. [env: TARGET_URL]')
 @click.option('--pending', default=DEFAULT_PENDING_MESSAGE,
               help='Pending message.')
 @click.option('--success', default=DEFAULT_SUCCESS_MESSAGE,
@@ -105,7 +106,8 @@ def exe(ctx, context, target_url, pending, success, failure, error, command):
 @main.command('set')
 @click.option('--context', default=DEFAULT_CONTEXT, show_default=True)
 @click.option('--description', help='Descriptive status message.')
-@click.option('--target-url', help='URL to the status.')
+@click.option('--target-url', envvar='TARGET_URL',
+              help='URL to the status. [env: TARGET_URL]')
 @click.option('--silent', help='URL to the status.',
               is_flag=True, default=False)
 @click.argument('state', type=click.Choice(STATES))

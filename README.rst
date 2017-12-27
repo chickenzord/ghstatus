@@ -31,6 +31,11 @@ These options can be automatically set from env variables or dotenv (.env) file 
 - `--base-url`: `GITHUB_URL`
 - `--repo`: `GITHUB_REPO`
 - `--sha`: `GITHUB_SHA`
+- `--target-url`: `TARGET_URL`
+
+These options can be set automatically in Jenkins context (`JENKINS_URL` is set).
+
+- `--target-url`: `BUILD_URL`
 
 If not set by either CLI args or env variables,
 these options can be automatically detected from git repository in current working dir.
