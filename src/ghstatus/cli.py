@@ -1,11 +1,6 @@
 import click
 import logging
 import requests
-import sys
-try:
-    import simplejson as json
-except ImportError:
-    import json
 from sh import git, Command, ErrorReturnCode, CommandNotFound
 
 
@@ -17,13 +12,12 @@ DEFAULT_FAILURE_MESSAGE = 'Tests failed'
 DEFAULT_ERROR_MESSAGE = 'Cannot run tests'
 STATES = ['error', 'failure', 'pending', 'success']
 
-is_interactive = sys.__stdin__.isatty()
 log = logging.getLogger('ghstatus')
 handler = logging.StreamHandler()
 formatter = logging.Formatter('[%(name)s:%(levelname)s] %(message)s')
 handler.setFormatter(formatter)
 log.addHandler(handler)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 def lstrip(text, prefix):
@@ -44,6 +38,10 @@ def get_repo():
 
 def get_sha():
     return str(git('rev-parse', 'HEAD')).strip()
+
+
+def print_status(status):
+    print(status['state'], status['context'], status['target_url'])
 
 
 @click.group()
@@ -128,33 +126,30 @@ def status_set(ctx, state, context, description, target_url, silent):
     }
 
     r = requests.post(status_url, json=payload, auth=(username, password))
-    if not silent:
-        result = json.dumps(r.json(), indent=2)
-        print(result)
 
-    if r.status_code != 200 and not silent:
+    if r.status_code >= 400 and not silent:
         exit(1)
+
+    if not silent:
+        print_status(r.json())
 
 
 @main.command('get')
-@click.option('--context', default=DEFAULT_CONTEXT, show_default=True)
-@click.option('json_output', '--json/--no-json', is_flag=True, default=True)
+@click.option('--silent', help='URL to the status.',
+              is_flag=True, default=False)
 @click.pass_context
-def status_get(ctx, context, json_output):
+def status_get(ctx, silent):
     base_url = ctx.obj.get('base_url')
     username = ctx.obj.get('username')
     password = ctx.obj.get('password')
     repo = ctx.obj.get('repo') or get_repo()
     sha = ctx.obj.get('sha') or get_sha()
-    status_url = '%s/repos/%s/statuses/%s' % (base_url, repo, sha)
+    status_url = '%s/repos/%s/commits/%s/status' % (base_url, repo, sha)
 
     r = requests.get(status_url, auth=(username, password))
-    if json_output:
-        print(json.dumps(r.json(), indent=2))
-    else:
-        for s in r.json():
-            line = '[%s] %s - %s' % (s['context'], s['state'], s['description'])
-            print(line)
 
-    if r.status_code != 200:
+    if r.status_code >= 400 and not silent:
         exit(1)
+
+    if not silent:
+        [print_status(s) for s in r.json()['statuses']]
