@@ -4,7 +4,7 @@ from dotenvy import load_env, read_file
 from os import path
 
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 def main():
