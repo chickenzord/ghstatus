@@ -1,7 +1,7 @@
 import click
 import logging
 import requests
-from sh import git, Command, ErrorReturnCode, CommandNotFound
+from sh import Command, ErrorReturnCode, CommandNotFound
 
 
 DEFAULT_GITHUB_URL = 'https://api.github.com'
@@ -29,15 +29,23 @@ def rstrip(text, suffix):
 
 
 def get_repo():
-    url = str(git('config', 'remote.origin.url')).strip()
-    url = lstrip(url, 'git@github.com:')
-    url = lstrip(url, 'https://github.com/')
-    url = rstrip(url, '.git')
-    return url
+    try:
+        from sh import git
+        url = str(git('config', 'remote.origin.url')).strip()
+        url = lstrip(url, 'git@github.com:')
+        url = lstrip(url, 'https://github.com/')
+        url = rstrip(url, '.git')
+        return url
+    except ImportError:
+        return None
 
 
 def get_sha():
-    return str(git('rev-parse', 'HEAD')).strip()
+    try:
+        from sh import git
+        return str(git('rev-parse', 'HEAD')).strip()
+    except ImportError:
+        return None
 
 
 def print_status(status):
