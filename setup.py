@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 
 REPO_NAME = 'chickenzord/ghstatus'
-VERSION = '0.2.2'
+VERSION = '0.2.3'
 ARCHIVE_URL = 'https://github.com/%s/archive/v%s.tar.gz' % (REPO_NAME, VERSION)
 
 setup(

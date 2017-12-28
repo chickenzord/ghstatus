@@ -4,7 +4,7 @@ from dotenvy import load_env, read_file
 from os import environ, path
 
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 
 def jenkins_autoset():
