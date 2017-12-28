@@ -11,6 +11,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     package_data={},
+    data_files=[('', ['LICENSE.txt'])],
     install_requires=[
         'click',
         'dotenvy',
