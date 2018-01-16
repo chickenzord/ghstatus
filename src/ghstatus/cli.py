@@ -89,7 +89,7 @@ def exe(ctx, context, target_url, pending, success, failure, error, command):
     def _status_set(state, description):
         log.info('%s -> %s', context, state)
         ctx.invoke(status_set, context=context, target_url=target_url,
-                   state=state, description=description, silent=True)
+                   state=state, description=description)
 
     try:
         _status_set('pending', pending)
