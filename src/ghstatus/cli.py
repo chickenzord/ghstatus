@@ -136,6 +136,7 @@ def status_set(ctx, state, context, description, target_url):
     r = requests.post(status_url, json=payload, auth=(username, password))
 
     if r.status_code >= 400:
+        print(r.text)
         exit(1)
     else:
         print_status(r.json())
