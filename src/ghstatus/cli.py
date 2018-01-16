@@ -116,11 +116,9 @@ def exe(ctx, context, target_url, pending, success, failure, error, command):
 @click.option('--description', help='Descriptive status message.')
 @click.option('--target-url', envvar='TARGET_URL',
               help='URL to the status. [env: TARGET_URL]')
-@click.option('--silent', help='URL to the status.',
-              is_flag=True, default=False)
 @click.argument('state', type=click.Choice(STATES))
 @click.pass_context
-def status_set(ctx, state, context, description, target_url, silent):
+def status_set(ctx, state, context, description, target_url):
     base_url = ctx.obj.get('base_url')
     username = ctx.obj.get('username')
     password = ctx.obj.get('password')
@@ -137,18 +135,15 @@ def status_set(ctx, state, context, description, target_url, silent):
 
     r = requests.post(status_url, json=payload, auth=(username, password))
 
-    if r.status_code >= 400 and not silent:
+    if r.status_code >= 400:
         exit(1)
-
-    if not silent:
+    else:
         print_status(r.json())
 
 
 @main.command('get')
-@click.option('--silent', help='URL to the status.',
-              is_flag=True, default=False)
 @click.pass_context
-def status_get(ctx, silent):
+def status_get(ctx):
     base_url = ctx.obj.get('base_url')
     username = ctx.obj.get('username')
     password = ctx.obj.get('password')
@@ -158,8 +153,7 @@ def status_get(ctx, silent):
 
     r = requests.get(status_url, auth=(username, password))
 
-    if r.status_code >= 400 and not silent:
+    if r.status_code >= 400:
         exit(1)
-
-    if not silent:
+    else:
         [print_status(s) for s in r.json()['statuses']]
